@@ -1,0 +1,85 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Default preset for use with autonubils's repos",
+  "extends": [
+    "config:base",
+    ":maintainLockFilesWeekly",
+    ":rebaseStalePrs",
+    ":semanticCommits",
+    ":semanticCommitScope(deps)",
+    "docker:enableMajor",
+    "docker:pinDigests",
+    "group:linters",
+    "helpers:pinGitHubActionDigests"
+  ],
+  "assignees": ["carsten.zeumer"],
+  "automergeType": "branch",
+  "dependencyDashboard": true,
+  "prCreation": "not-pending",
+  "rebaseWhen": "behind-base-branch",
+  "platformAutomerge": true,
+  "internalChecksFilter": "strict",
+  "packageRules": [
+    {
+      "description": "Require dashboard approval for major updates except autonubil",
+      "excludePackagePatterns": [
+        "^autonubil?($|/)",
+        "^@autonubil\\/"
+      ],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Automerge non-major updates",
+      "matchUpdateTypes": ["minor", "patch", "digest", "lockFileMaintenance"],
+      "automerge": true
+    },
+   
+    {
+      "description": "Group prettier packages",
+      "matchPackageNames": ["prettier"],
+      "matchPackagePatterns": ["^@prettier\\/", "^prettier-plugin-"],
+      "groupName": "prettier packages"
+    },
+    {
+      "description": "Disable Ubuntu minor updates",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["amd64/ubuntu", "ubuntu"],
+      "matchUpdateTypes": ["minor"],
+      "enabled": false
+    },
+    {
+      "description": "One week stability period for npm packages except autonubil",
+      "matchDatasources": ["npm"],
+      "excludePackageNames": ["autonubil"],
+      "excludePackagePrefixes": ["@autonubil/"],
+      "stabilityDays": 7
+    }
+  ],
+  "regexManagers": [
+    {
+      "description": "Update _VERSION variables in Dockerfiles",
+      "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>[a-z-]+?))?\\s(?:ENV|ARG) .+?_VERSION=(?<currentValue>.+?)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
+    },
+    {
+      "description": "Update install-* Buildpack commands in Dockerfiles",
+      "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>[a-z-]+?))?\\sRUN install-[a-z]+? (?<depName>[a-z-]+?) (?<currentValue>.+?)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
+    },
+    {
+      "description": "Update _VERSION variables in shell scripts",
+      "fileMatch": ["\\.sh$"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>.+?)(?: (?:packageName|lookupName)=(?<packageName>.+?))?(?: versioning=(?<versioning>[a-z-]+?))?\\s[A-Z_]+?_VERSION=(?<currentValue>.+?)\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
+    }
+  ]
+}
