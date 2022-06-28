@@ -7,6 +7,9 @@
     ":rebaseStalePrs",
     ":semanticCommits",
     ":semanticCommitScope(deps)",
+    ":automergeDigest",
+    ":automergePatch",
+    ":automergeMinor",
     "docker:enableMajor",
     "group:linters"
   ],
