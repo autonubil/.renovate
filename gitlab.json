@@ -8,9 +8,7 @@
     ":semanticCommits",
     ":semanticCommitScope(deps)",
     "docker:enableMajor",
-    "docker:pinDigests",
-    "group:linters",
-    "helpers:pinGitHubActionDigests"
+    "group:linters"
   ],
   "assignees": ["carsten.zeumer"],
   "automergeType": "branch",
