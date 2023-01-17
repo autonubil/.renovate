@@ -13,7 +13,7 @@
     "docker:enableMajor",
     "group:linters"
   ],
-  "assignees": ["carsten.zeumer"],
+  "assignees": ["czeumer"],
   "automergeType": "branch",
   "dependencyDashboard": true,
   "prCreation": "not-pending",
